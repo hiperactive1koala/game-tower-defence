@@ -6,12 +6,13 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
+    private Transform[] _waypoints;
     private Transform _target;
     private int _wavePointIndex= 0;
-    private Transform[] _waypoints;
-
+    private WaveSpawner _waveSpawner;
     private void Start()
     {
+        _waveSpawner = FindObjectOfType<WaveSpawner>();
         var dots = FindObjectOfType<Waypoints>();
         _waypoints = dots.GetWaypoints();
         _target = _waypoints[0];
@@ -32,6 +33,7 @@ public class Enemy : MonoBehaviour
     {
         if (_wavePointIndex >= _waypoints.Length-1)
         {
+            _waveSpawner.RemoveEnemy(gameObject);
             Destroy(gameObject);
             return;
         }

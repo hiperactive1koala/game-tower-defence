@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class WaveSpawner : MonoBehaviour
 {
     #region Events
-    
-        public event EventHandler<OnProgressChangedEventsArgs> OnCountdownChanged;
-        public class OnProgressChangedEventsArgs : EventArgs { public float Countdown; }
+    public event EventHandler<OnProgressChangedEventsArgs> OnCountdownChanged;
+    public class OnProgressChangedEventsArgs : EventArgs { public float Countdown; }
     #endregion
 
     #region SerializeFields
@@ -17,10 +18,14 @@ public class WaveSpawner : MonoBehaviour
     [SerializeField] private float _waveInterval = 5f;
     
     #endregion
-    
-    
+
+    private List<GameObject> _enemies;
     private float _countdown = 2f;
     private int _waveIndex;
+
+
+    #region Unity
+    private void Start() => _enemies = new List<GameObject>();
 
     private void Update()
     {
@@ -36,6 +41,7 @@ public class WaveSpawner : MonoBehaviour
             Countdown = _countdown
         });
     }
+    #endregion
 
     private IEnumerator SpawnWave()
     {
@@ -49,6 +55,10 @@ public class WaveSpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        Instantiate(_enemyPrefab, _spawnPoint.position,_spawnPoint.rotation);
+        var enemy = Instantiate(_enemyPrefab, _spawnPoint.position,_spawnPoint.rotation);
+        _enemies.Add(enemy.gameObject);
     }
+
+    public List<GameObject> GetEnemyList() => _enemies;
+    public void RemoveEnemy(GameObject destroyedEnemy) => _enemies.Remove(destroyedEnemy);
 }
